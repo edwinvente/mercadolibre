@@ -1,4 +1,5 @@
-
+node_module/
+config/default.json
 /public/hot
 
 package-lock.json
