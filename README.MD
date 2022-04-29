@@ -14,6 +14,17 @@ DBPORT=dbport
 /api/stats  -- get no recived params
 
 ## db
+local
+PORT=5000
+DBHOST=127.0.0.1
+DBUSER=root
+DBPASS=root
+DBNAME=mercadolibre
+DBPORT=8889
+
+mysql://b4065e56ffe9d7:09560698@us-cdbr-east-05.cleardb.net/heroku_32a0758eba18360?reconnect=true
+mysql://b4065e56ffe9d7:09560698@us-cdbr-east-05.cleardb.net/heroku_32a0758eba18360?reconnect=true
+
 -- phpMyAdmin SQL Dump
 -- version 5.1.1
 -- https://www.phpmyadmin.net/
