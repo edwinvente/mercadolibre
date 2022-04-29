@@ -50,6 +50,9 @@ const handleDisconnect = () => {
     password: process.env.DBPASS,
     database: process.env.DBNAME,
     port: process.env.DBPORT,
+    timezone: "+0800",
+    connectionLimit: 10,
+    connectTimeout: 10000,
   }); // Recreate the connection, since
   // the old one cannot be reused.
 
