@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 
-//nos ayuda a analizar el cuerpo de la solicitud POST
+//we are help to analize the body of the request POST
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//cargamos el archivo de rutas
-//app.use(require("./routes/carta"));
+//upload routes for mutants
 app.use(require("./routes/mutant"));
 
 app.listen(process.env.PORT || 3300, () => {
