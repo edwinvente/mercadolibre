@@ -17,10 +17,8 @@
   },
   "dependencies": {
     "dotenv": "^16.0.0",
-    "express":"*",
+    "express": "^4.18.0",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.16",
-    "body-parser":"*",
-    "bcrypt": "^0.8.5"
+    "nodemon": "^2.0.16"
   }
 }
