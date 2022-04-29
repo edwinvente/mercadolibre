@@ -1,25 +1,33 @@
 //services
-const { storeDna, validateDnaExist } = require("../services/dna.js");
+const { storeDna, validateDnaExist, getReport } = require("../services/dna.js");
+
+exports.getSearchReport = async (request, response) => {
+  await getReport((data) => {
+    response.status(200).json({
+      data,
+    });
+  });
+};
 
 exports.getTestMutant = async (request, response) => {
   const dna = request.body?.dna;
   let status = 403;
   //validate if dna exist in my request
   if (typeof dna !== "undefined") {
-    await validateDnaExist(dna.toString(), setquery);
     //validate if is mutant
     const vlds = isMutant(dna);
     const mutants = vlds.filter((vl) => vl.ismutant === true);
     status = mutants.length > 0 ? 200 : 403;
+    //if not found the dna in db, store new record
+    await validateDnaExist(dna.toString(), setquery, status);
   }
   response.status(status).json({
     status: status,
   });
 };
 
-const setquery = async (resp, str) => {
-  if (!resp) await storeDna(str);
-  return resp;
+const setquery = async (resp, str, ismutant) => {
+  if (!resp) await storeDna(str, ismutant);
 };
 
 const isMutant = (dna) => {
