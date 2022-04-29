@@ -10,9 +10,12 @@ DBPORT=dbport
 3. execute the sql in db for her tables project
 4. nodemon index.js 
 5. routes for api
-/api/mutant  -- post -- req { dna: [array with rhs] }
-/api/stats  -- get no recived params
 
+/api/mutant  -- post -- req { dna: [array with rhs] }
+https://afternoon-anchorage-91441.herokuapp.com/api/mutant
+
+/api/stats  -- get no recived params
+https://afternoon-anchorage-91441.herokuapp.com/api/stats
 ## db
 local
 PORT=5000
