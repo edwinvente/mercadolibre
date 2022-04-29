@@ -1,0 +1,3 @@
+## TEST FOR DNA
+["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"] find mutants
+["ATGCGA","CAGTGC","TTAAGT","AGAAGG","CCACTA","TCACTG"] not found mutants
