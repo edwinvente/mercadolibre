@@ -1,4 +1,4 @@
-const express = require("Express");
+const express = require("express");
 const app = express();
 //controller for service
 const { getTestMutant, getSearchReport } = require("../controllers/mutant");
