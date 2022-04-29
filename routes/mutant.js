@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
-
 //controller for service
-const { getTestMutant } = require("../controllers/mutant");
+const { getTestMutant, getSearchReport } = require("../controllers/mutant");
 //rutas
 app.route("/api/mutant").post(getTestMutant);
+app.route("/api/stats").get(getSearchReport);
 
 module.exports = app;
