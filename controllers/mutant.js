@@ -1,25 +1,25 @@
-//conexión con la base de datos
-const { connection } = require("../config.db");
-
-exports.getArticles = async (request, response) => {
-  connection.query("SELECT * FROM articles", (error, results) => {
-    if (error) throw error;
-    response.status(200).json(results);
-  });
-};
+//services
+const { storeDna, validateDnaExist } = require("../services/dna.js");
 
 exports.getTestMutant = async (request, response) => {
   const dna = request.body?.dna;
   let status = 403;
   //validate if dna exist in my request
   if (typeof dna !== "undefined") {
-    const vld = isMutant(dna);
-    const mutants = vld.filter((vl) => vl.ismutant === true);
+    await validateDnaExist(dna.toString(), setquery);
+    //validate if is mutant
+    const vlds = isMutant(dna);
+    const mutants = vlds.filter((vl) => vl.ismutant === true);
     status = mutants.length > 0 ? 200 : 403;
   }
   response.status(status).json({
     status: status,
   });
+};
+
+const setquery = async (resp, str) => {
+  if (!resp) await storeDna(str);
+  return resp;
 };
 
 const isMutant = (dna) => {
