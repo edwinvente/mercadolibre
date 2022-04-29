@@ -9,6 +9,9 @@ DBPORT=dbport
 2. npm i
 3. execute the sql in db for her tables project
 4. nodemon index.js 
+5. routes for api
+/api/mutant  -- post -- req { dna: [array with rhs] }
+/api/stats  -- get no recived params
 
 ## db
 -- phpMyAdmin SQL Dump
