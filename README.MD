@@ -8,7 +8,7 @@ DBNAME=database
 DBPORT=dbport
 2. npm i
 3. execute the sql in db for her tables project
-4. nodemon index.js 
+4. nodemon index.js
 5. routes for api
 
 /api/mutant  -- post -- req { dna: [array with rhs] }
@@ -30,7 +30,7 @@ mysql://b4065e56ffe9d7:09560698@us-cdbr-east-05.cleardb.net/heroku_32a0758eba183
 
 ## scriot for table
 CREATE TABLE `dna` (
-  `id` int(11) NOT NULL,
+  `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `dna` varchar(255) NOT NULL,
   `ismutant` int(11) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
