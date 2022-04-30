@@ -65,14 +65,14 @@ const isMutant = (dna) => {
     };
   });
 
-  console.log(testMaxtris);
+  console.log(testMaxtris, fv);
   const mutants = test.filter((vl) => vl.ismutant === true);
   let resp = mutants.length > 0 ? 200 : 403;
   //...
   const obmutants = obtest.filter((vl) => vl.ismutant === true);
   let obresp = obmutants.length > 0 ? 200 : 403;
-
-  return resp == 200 && obresp == 200 ? 200 : 403;
+  //console.log(obmutants, test, resp, obresp);
+  return resp == 200 || obresp == 200 ? 200 : 403;
 };
 
 const createChars = (str) => {
