@@ -13,7 +13,21 @@ const db_config = {
 };
 
 let connection;
-function handleDisconnect() {
+
+const pool = mysql.createPool({
+  host: process.env.DBHOST,
+  user: process.env.DBUSER,
+  password: process.env.DBPASS,
+  database: process.env.DBNAME,
+  port: process.env.DBPORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+module.exports = { connection: pool };
+
+/* function handleDisconnect() {
   connection = mysql.createConnection(db_config); // Recreate the connection, since
   // the old one cannot be reused.
 
@@ -40,7 +54,7 @@ function handleDisconnect() {
 
 handleDisconnect();
 
-module.exports = { connection };
+module.exports = { connection }; */
 
 /* 
 
