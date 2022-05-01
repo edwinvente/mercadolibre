@@ -14,8 +14,20 @@ exports.getTestMutant = async (request, response) => {
   let status = 403;
   //validate if dna exist in my request
   if (typeof dna !== "undefined") {
-    //validate if is mutant
-    status = isMutant(dna);
+    //creo la matrix
+    let matrix = createMatrix(dna);
+    //Traigo las diagonales.
+    let diags = getDiags(matrix);
+    //Traigo las columnas.
+    let cols = getCols(matrix);
+    //Traigo las filas.
+    let rows = getRows(matrix);
+    //console.log(/* "matrix", matrix,*/ diags /*, cols  , rows */);
+    const check = [...diags, ...cols, ...rows].find((line) =>
+      checkAdn(line, 4)
+    );
+    let resp = typeof check !== "undefined" ? 200 : 403;
+    status = resp == 200 && check.length > 0 ? 200 : 403;
     //if not found the dna in db, store new record
     await validateDnaExist(dna.toString(), setquery, status);
   }
@@ -23,89 +35,85 @@ exports.getTestMutant = async (request, response) => {
     status,
   });
 };
-
 const setquery = async (resp, str, ismutant) => {
   if (!resp) await storeDna(str, ismutant);
 };
 
-const isMutant = (dna) => {
-  let testMaxtris = [];
-  let mutant = false;
-  //start test is mutant and create matrix
-  const test = dna.map((rg, i) => {
-    //convert string in array
-    const str = [...rg];
-    //create object for analityc data
-    const { chars, charsM } = createChars(str);
-    const { mutants, matrix, ismutant } = validateMutant(chars, dna, i);
-    //matrix formada
-    testMaxtris = [...testMaxtris, charsM];
-    return {
-      ...mutants,
-      charsM,
-      ismutant,
-    };
+//creamos la matrix
+const createMatrix = (dna) => {
+  let finalMtx = [];
+  dna.forEach((adn) => {
+    let tmpArray = [];
+    for (let i = 0; i <= adn.length - 1; i++) tmpArray.push(adn[i]);
+    finalMtx.push(tmpArray);
   });
-
-  //create oblicuos positions
-  let oblicuos = "";
-  testMaxtris.map((tm, i) => {
-    oblicuos += `${testMaxtris[i][i]}`;
-  });
-  //create dna oblicuo
-  let fv = [oblicuos];
-  const obtest = fv.map((ob, i) => {
-    const str = [...ob];
-    const { chars, charsM } = createChars(str);
-    const { mutants, matrix, ismutant } = validateMutant(chars, oblicuos, i);
-    return {
-      ...mutants,
-      charsM,
-      ismutant,
-    };
-  });
-
-  console.log(testMaxtris, fv);
-  const mutants = test.filter((vl) => vl.ismutant === true);
-  let resp = mutants.length > 0 ? 200 : 403;
-  //...
-  const obmutants = obtest.filter((vl) => vl.ismutant === true);
-  let obresp = obmutants.length > 0 ? 200 : 403;
-  //console.log(obmutants, test, resp, obresp);
-  return resp == 200 || obresp == 200 ? 200 : 403;
+  return finalMtx;
 };
 
-const createChars = (str) => {
-  const chars = {};
-  const charsM = {};
-  let counter = 0;
-  for (const char of str) {
-    //create for each key her respective value
-    chars[char] = (chars[char] || 0) + 1;
-    charsM[counter] = char;
-    counter++;
-  }
-  return {
-    chars,
-    charsM,
-  };
+//Extraigo las diagonales de la matriz
+const getDiags = (matriz) => {
+  let diagonales = [];
+  //Traigo la diagonal superior.
+  matriz.forEach((col, i) => diagonales.push(getDiagonalSup(matriz, i)));
+  //Traigo la diagonal inferior.
+  matriz.forEach((row, i) => {
+    if (i > 0) diagonales.push(getDiagonalInfRow(matriz, i));
+  });
+  return diagonales;
+};
+//Extraigo las diagonal de la mitad superior en base al n° de columna.
+const getDiagonalSup = (matriz, nCol) => {
+  let line = [];
+  for (let i = 0; i <= matriz.length - nCol - 1; i++)
+    line.push(matriz[i][i + nCol]);
+  return line;
+};
+//Extraigo la diagonal de la mitad inferior en base al n° de fila.
+const getDiagonalInfRow = (matriz, nRow) => {
+  let line = [];
+  for (let i = 0; i <= matriz.length - nRow - 1; i++)
+    line.push(matriz[i + nRow][i]);
+  return line;
 };
 
-const validateMutant = (chars, dna, i) => {
-  let mutants = [];
-  let matrix = [];
-  let ismutant = false;
-  //map object for validate many key is mutant
-  Object.entries(chars).map(([key, value]) => {
-    if (value >= 4) {
-      mutants = [...mutants, { rh: key, repeats: value, dna: dna[i] }];
-      ismutant = true;
+//Extraigo las columnas.
+const getCols = (matriz) => {
+  return matriz.map((col, i) => getCol(matriz, i));
+};
+//Extraigo la columa y la devuelvo como un array plano.
+const getCol = (matriz, nCol) => {
+  let groups = [];
+  //Extraigo la columna entera.
+  for (let i = 0; i <= matriz.length - 1; i++) groups.push(matriz[i][nCol]);
+  return groups;
+};
+
+//Extraigo las filas.
+const getRows = (matriz) => {
+  return matriz.map((col, i) => getRow(matriz, i));
+};
+//Extraigo la fila y la devuelvo como un array plano.
+const getRow = (matriz, nRow) => {
+  let groups = [];
+  //Extraigo la fila entera.
+  for (let i = 0; i <= matriz.length - 1; i++) groups.push(matriz[nRow][i]);
+  return groups;
+};
+
+//Recorre buscando secuencias consecutivas con una cantidad mayor o igual a tope.
+const checkAdn = (line, top) => {
+  let last = "";
+  let actual = "";
+  let count = 0;
+
+  for (let i = 0; i <= line.length - 1; i++) {
+    last = i == 0 ? line[0] : line[i - 1];
+    actual = line[i];
+
+    if (last == actual) {
+      count++;
+      if (count == top) return true;
     }
-    matrix = [...mutants, { rh: key, repeats: value, dna: dna[i] }];
-  });
-  return {
-    mutants,
-    matrix,
-    ismutant,
-  };
+  }
+  return false;
 };
