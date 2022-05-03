@@ -3,7 +3,7 @@ const { connection } = require("../config.db");
 
 exports.getReport = async (cb) => {
   connection.query(
-    "SELECT DISTINCT (SELECT COUNT(id) FROM dna WHERE dna.ismutant = 200) as count_mutant_dna, (SELECT COUNT(id) FROM dna WHERE dna.ismutant = 403) as count_human_dna, sum(case when dna.ismutant = 200 then 1 else 0 end)/count(*) as mutant_ratio, sum(case when dna.ismutant = 403 then 1 else 0 end)/count(*) as human_ratio FROM dna",
+    "SELECT (SELECT COUNT(id) FROM dna WHERE dna.ismutant = 200) as count_mutant_dna, (SELECT COUNT(id) FROM dna WHERE dna.ismutant = 403) as count_human_dna, sum(case when dna.ismutant = 200 then 1 else 0 end)/count(*) as mutant_ratio, sum(case when dna.ismutant = 403 then 1 else 0 end)/count(*) as human_ratio FROM dna",
     (error, results) => {
       if (error) return false;
       cb(results);

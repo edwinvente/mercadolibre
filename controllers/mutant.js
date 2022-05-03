@@ -108,7 +108,6 @@ const checkAdn = (row, max) => {
   for (let i = 0; i <= row.length - 1; i++) {
     last = i == 0 ? row[0] : row[i - 1];
     actual = row[i];
-
     if (last == actual) {
       count++;
       if (count == max) return true;
