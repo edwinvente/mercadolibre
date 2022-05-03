@@ -17,17 +17,16 @@ exports.getTestMutant = async (request, response) => {
     //creo la matrix
     let matrix = createMatrix(dna);
     //Traigo las diagonales.
-    let diags = getDiags(matrix);
+    let diagonales = getDiags(matrix);
     //Traigo las columnas.
-    let cols = getCols(matrix);
+    let columnas = getCols(matrix);
     //Traigo las filas.
-    let rows = getRows(matrix);
-    //console.log(/* "matrix", matrix,*/ diags /*, cols  , rows */);
-    const check = [...diags, ...cols, ...rows].find((line) =>
-      checkAdn(line, 4)
+    let filas = getRows(matrix);
+    //Buscamos en todos los registros si existe adn mutante
+    const check = [...diagonales, ...columnas, ...filas].find((row) =>
+      checkAdn(row, 4)
     );
-    let resp = typeof check !== "undefined" ? 200 : 403;
-    status = resp == 200 && check.length > 0 ? 200 : 403;
+    status = typeof check !== "undefined" ? 200 : 403;
     //if not found the dna in db, store new record
     await validateDnaExist(dna.toString(), setquery, status);
   }
@@ -101,18 +100,18 @@ const getRow = (matriz, nRow) => {
 };
 
 //Recorre buscando secuencias consecutivas con una cantidad mayor o igual a tope.
-const checkAdn = (line, top) => {
-  let last = "";
-  let actual = "";
+const checkAdn = (row, max) => {
+  let last,
+    actual = "";
   let count = 0;
 
-  for (let i = 0; i <= line.length - 1; i++) {
-    last = i == 0 ? line[0] : line[i - 1];
-    actual = line[i];
+  for (let i = 0; i <= row.length - 1; i++) {
+    last = i == 0 ? row[0] : row[i - 1];
+    actual = row[i];
 
     if (last == actual) {
       count++;
-      if (count == top) return true;
+      if (count == max) return true;
     }
   }
   return false;
